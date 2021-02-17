@@ -16,10 +16,29 @@ QScreen *getActiveScreen() {
 
 void remove_spaces(char *s) {
     const char *d = s;
+    int space_flag = 0;
+    int newline_flag = 0;
     do {
-        while (*d == ' ' || *d == '\n') {
-            ++d;
-        }
+      switch (*d){
+      case ' ':
+      case '\t':
+	if (space_flag){
+	  ++d;
+	  continue;
+	}
+	space_flag = 1;
+	break;
+      case '\n':
+	if (++newline_flag > 2){
+	  // >2 as \n for continuation line and \n\n for new lines.
+	  ++d;
+	  continue;
+	}
+	break;
+      default:
+	space_flag = 0;
+	newline_flag = 0;
+      }
     } while (*s++ = *d++);
 }
 

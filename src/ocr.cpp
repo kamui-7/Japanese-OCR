@@ -32,9 +32,15 @@ PIX *OCR::processImage(QString path) {
     QByteArray array = path.toUtf8();
     const char *imageLocation = array.constData();
     PIX *pixs = pixRead(imageLocation);
-
-    // Convert to grayscale
-    pixs = pixConvertRGBToGray(pixs, 0.0, 0.0, 0.0);
+    if (pixGetDepth(pixs) == 8){
+      // Already Grayscale so no conversion required.
+      ;
+      // FIXME Find a better solution for this, Couldn't find how to
+      // check for number of bands with pixmap
+    }else{
+      // Convert to grayscale
+      pixs = pixConvertRGBToGray(pixs, 0.0, 0.0, 0.0);
+    }
 
     // Resize
     pixs = pixScale(pixs, factor, factor);

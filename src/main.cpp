@@ -64,9 +64,21 @@ void runPrevOCR(ORIENTATION _) {
 int main(int argc, char **argv) {
     ocr = new OCR();
 
-    if (argc >= 3){
-        char* img = argv[1];
-        char* orientation = argv[2];
+    if (argc > 1){
+      if (! std::strcmp(argv[1], "help") || ! std::strcmp(argv[1], "--help")){
+	qInfo("OCR for Japanese Texts.");
+	qInfo("Usage:");
+	qInfo("1) %s", argv[0]);
+	qInfo("\t%s", "Run the main application.");
+	qInfo("2) %s %s", argv[0],"help/ --help");
+	qInfo("\t%s", "Display this message.");
+	qInfo("3) %s %s", argv[0], "ORIENTATION{-h; -v; horizontal; vertical} IMAGEFILE");
+	qInfo("\tRun the OCR on the given IMAGEFILE with given ORIENTATION.");
+	exit(0);
+      }
+      if (argc > 2){
+        char* orientation = argv[1];
+        char* img = argv[2];
 
         ORIENTATION orn;
 
@@ -75,10 +87,10 @@ int main(int argc, char **argv) {
             exit(1);
         }
 
-        if (! std::strcmp(orientation, "vertical")){
+        if (! std::strcmp(orientation, "vertical") || ! std::strcmp(orientation, "-v")){
             orn = VERTICAL;
         }
-        else if (! std::strcmp(orientation, "horizontal")){
+        else if (! std::strcmp(orientation, "horizontal") || ! std::strcmp(orientation, "-h")){
             orn = HORIZONTAL;
         }
         else {
@@ -88,6 +100,9 @@ int main(int argc, char **argv) {
 
         char *result = ocr->ocrImage(img, orn);
         qInfo("%s", result);
+      } else {
+	qCritical("Invalid Arguments, please use %s --help to see the usage", argv[0]);
+      }
     }
     else {
         QApplication app(argc, argv);
